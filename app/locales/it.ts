@@ -129,6 +129,11 @@ const it: LocaleType = {
         "Utilizzare la chiave per ignorare il limite del codice di accesso",
       Placeholder: "OpenAI API Key",
     },
+    BaseURL: {
+      Title: "Base URL",
+      SubTitle: "使用自己的Base URL",
+      Placeholder: "Base URL",
+    },
     Usage: {
       Title: "Bilancio Account",
       SubTitle(used: any, total: any) {
