@@ -62,6 +62,10 @@ export const ALL_MODELS = [
     available: true,
   },
   {
+    name: "gpt-4-32k",
+    available: true,
+  },
+  {
     name: "gpt-4-poe",
     available: true,
   },
