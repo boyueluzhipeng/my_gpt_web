@@ -53,24 +53,32 @@ const ENABLE_GPT4 = true;
 
 export const ALL_MODELS = [
   {
-    name: "gpt-3.5-turbo",
-    available: true,
-  },
-  {
-    name: "gpt-4",
-    available: true,
-  },
-  {
-    name: "gpt-4-32k",
-    available: true,
-  },
-  {
     name: "claude-v1",
     available: true,
   },
   {
     name: "claude-v1-100k",
     available: true,
+  },
+  {
+    name: "claude-instant-v1",
+    available: true,
+  },
+  {
+    name: "claude-instant-v1-100k",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo",
+    available: false,
+  },
+  {
+    name: "gpt-4",
+    available: false,
+  },
+  {
+    name: "gpt-4-32k",
+    available: false,
   },
 ] as const;
 
