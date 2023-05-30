@@ -86,6 +86,10 @@ export const ALL_MODELS = [
     available: true,
   },
   {
+    name: "claude-instant-100k",
+    available: true,
+  },
+  {
     name: "claude+",
     available: true,
   },
@@ -106,7 +110,19 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "claude-instant-100k",
+    name: "lu_claude-instant-v1-100k",
+    available: true,
+  },
+  {
+    name: "lu_claude-instant-v1",
+    available: true,
+  },
+  {
+    name: "lu_claude-v1-100k",
+    available: true,
+  },
+  {
+    name: "lu_claude-v1",
     available: true,
   },
 ] as const;
