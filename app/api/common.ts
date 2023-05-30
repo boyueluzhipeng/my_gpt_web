@@ -8,12 +8,16 @@ const BASE_URL = process.env.BASE_URL ?? OPENAI_URL;
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
   const authValue = req.headers.get("Authorization") ?? "";
+  const user_base_url = req.headers.get("User-Base-Url") ?? "";
   const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
     "",
   );
-
   let baseUrl = BASE_URL;
+  if (user_base_url) {
+    console.log("[User Base Url]", user_base_url);
+    baseUrl = user_base_url;
+  }
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `${PROTOCOL}://${baseUrl}`;
@@ -30,7 +34,8 @@ export async function requestOpenai(req: NextRequest) {
     controller.abort();
   }, 10 * 60 * 1000);
 
-  const fetchUrl = `${baseUrl}/${openaiPath}`;
+  const fetchUrl = `${baseUrl}/${openaiPath}`.split("?")[0];
+  console.log("[Fetch Url]", fetchUrl);
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",

@@ -24,6 +24,7 @@ export const DEFAULT_CONFIG = {
   tightBorder: false,
   sendPreviewBubble: true,
   sidebarWidth: 300,
+  baseURL: "",
 
   disablePromptHint: false,
 
@@ -53,15 +54,35 @@ const ENABLE_GPT4 = true;
 
 export const ALL_MODELS = [
   {
-    name: "claude-v1",
+    name: "gpt-4",
     available: true,
   },
   {
-    name: "claude-v1-100k",
+    name: "gpt-3.5-turbo",
     available: true,
   },
   {
-    name: "claude-instant-v1",
+    name: "gpt-4-poe",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo-poe",
+    available: true,
+  },
+  {
+    name: "sage",
+    available: true,
+  },
+  {
+    name: "dragonfly",
+    available: true,
+  },
+  {
+    name: "claude-instant",
+    available: true,
+  },
+  {
+    name: "claude+",
     available: true,
   },
   {
@@ -69,16 +90,20 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "gpt-3.5-turbo",
-    available: false,
+    name: "claude-instant-v1",
+    available: true,
   },
   {
-    name: "gpt-4",
-    available: false,
+    name: "claude-v1-100k",
+    available: true,
   },
   {
-    name: "gpt-4-32k",
-    available: false,
+    name: "claude-v1",
+    available: true,
+  },
+  {
+    name: "claude-instant-100k",
+    available: true,
   },
 ] as const;
 
@@ -100,7 +125,7 @@ export function limitNumber(
 export function limitModel(name: string) {
   return ALL_MODELS.some((m) => m.name === name && m.available)
     ? name
-    : ALL_MODELS[4].name;
+    : ALL_MODELS[0].name;
 }
 
 export const ModalConfigValidator = {

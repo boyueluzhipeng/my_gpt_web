@@ -145,6 +145,11 @@ const cn = {
       SubTitle: "使用自己的 Key 可绕过密码访问限制",
       Placeholder: "OpenAI API Key",
     },
+    BaseURL: {
+      Title: "Base URL",
+      SubTitle: "使用自己的Base URL",
+      Placeholder: "Base URL",
+    },
 
     Usage: {
       Title: "余额查询",

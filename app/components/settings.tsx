@@ -519,6 +519,26 @@ export function Settings() {
           ) : null}
 
           <ListItem
+            title={Locale.Settings.BaseURL.Title}
+            subTitle={Locale.Settings.BaseURL.SubTitle}
+          >
+            <Input
+              value={accessStore.baseUrl}
+              type="text"
+              placeholder={Locale.Settings.BaseURL.Placeholder}
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }} // 限制输入框显示为一行
+              onChange={(e) => {
+                const trimmedValue = e.currentTarget.value.trim(); // 去除两边的空格
+                accessStore.updateBaseUrl(trimmedValue);
+              }}
+            />
+          </ListItem>
+
+          <ListItem
             title={Locale.Settings.Usage.Title}
             subTitle={
               showUsage

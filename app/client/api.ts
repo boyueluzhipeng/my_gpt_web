@@ -114,6 +114,9 @@ export function getHeaders() {
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
   }
+  if (validString(accessStore.baseUrl)) {
+    headers["User-Base-Url"] = accessStore.baseUrl;
+  }
 
   return headers;
 }
