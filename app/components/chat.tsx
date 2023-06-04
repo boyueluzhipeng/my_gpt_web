@@ -576,6 +576,15 @@ export function Chat() {
     );
   };
 
+  const deleteMessage_and_copy = (userIndex: number) => {
+    const botMessage = session.messages[userIndex + 1];
+    console.log("botMessage", botMessage);
+    // chatStore.updateCurrentSession((session) =>
+    //   session.messages.splice(userIndex, 2),
+    // );
+    return botMessage.content; //将机器人的回复内容返回
+  };
+
   const onDelete = (botMessageId: number) => {
     const userIndex = findLastUserIndex(botMessageId);
     if (userIndex === null) return;
@@ -591,6 +600,21 @@ export function Chat() {
     const content = session.messages[userIndex].content;
     deleteMessage(userIndex);
     chatStore.onUserInput(content).then(() => setIsLoading(false));
+    inputRef.current?.focus();
+  };
+
+  const onContinue = (botMessageId: number) => {
+    // find last user input message and resend
+    const userIndex = findLastUserIndex(botMessageId);
+    if (userIndex === null) return;
+
+    setIsLoading(true);
+    // const content = session.messages[userIndex].content;
+    const content = "Continue";
+    const last_content = deleteMessage_and_copy(userIndex);
+    chatStore
+      .onUserInput_with_lastcontent(content, last_content)
+      .then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -794,6 +818,12 @@ export function Chat() {
                               onClick={() => onResend(message.id ?? i)}
                             >
                               {Locale.Chat.Actions.Retry}
+                            </div>
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={() => onContinue(message.id ?? i)}
+                            >
+                              {Locale.Chat.Actions.Continue}
                             </div>
                           </>
                         )}

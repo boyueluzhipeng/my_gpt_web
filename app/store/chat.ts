@@ -86,6 +86,10 @@ interface ChatStore {
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
   onUserInput: (content: string) => Promise<void>;
+  onUserInput_with_lastcontent: (
+    content: string,
+    last_content: string,
+  ) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -292,6 +296,107 @@ export const useChatStore = create<ChatStore>()(
             botMessage.streaming = false;
             if (message) {
               botMessage.content = message;
+              get().onNewMessage(botMessage);
+            }
+            ChatControllerPool.remove(
+              sessionIndex,
+              botMessage.id ?? messageIndex,
+            );
+            set(() => ({}));
+          },
+          onError(error) {
+            const isAborted = error.message.includes("aborted");
+            botMessage.content =
+              "\n\n" +
+              prettyObject({
+                error: true,
+                message: error.message,
+              });
+            botMessage.streaming = false;
+            userMessage.isError = !isAborted;
+            botMessage.isError = !isAborted;
+
+            set(() => ({}));
+            ChatControllerPool.remove(
+              sessionIndex,
+              botMessage.id ?? messageIndex,
+            );
+
+            console.error("[Chat] failed ", error);
+          },
+          onController(controller) {
+            // collect controller for stop/retry
+            ChatControllerPool.addController(
+              sessionIndex,
+              botMessage.id ?? messageIndex,
+              controller,
+            );
+          },
+        });
+      },
+
+      async onUserInput_with_lastcontent(content, last_content) {
+        const session = get().currentSession();
+        const modelConfig = session.mask.modelConfig;
+
+        const userMessage: ChatMessage = createMessage({
+          role: "user",
+          content,
+        });
+
+        const botMessage: ChatMessage = createMessage({
+          role: "assistant",
+          streaming: true,
+          id: userMessage.id! + 1,
+          model: modelConfig.model,
+        });
+
+        const systemInfo = createMessage({
+          role: "system",
+          content: `IMPORTANT: You are a virtual assistant powered by the ${
+            modelConfig.model
+          } model, now time is ${new Date().toLocaleString()}}`,
+          id: botMessage.id! + 1,
+        });
+
+        // get recent messages
+        const systemMessages = [];
+        // if user define a mask with context prompts, wont send system info
+        if (session.mask.context.length === 0) {
+          systemMessages.push(systemInfo);
+        }
+
+        const recentMessages = get().getMessagesWithMemory();
+        const sendMessages = systemMessages.concat(
+          recentMessages.concat(userMessage),
+        );
+        const sessionIndex = get().currentSessionIndex;
+        const messageIndex = get().currentSession().messages.length + 1;
+
+        // save user's and bot's message
+        get().updateCurrentSession((session) => {
+          session.messages.push(userMessage);
+          session.messages.push(botMessage);
+        });
+
+        botMessage.content = last_content;
+
+        // make request
+        console.log("[User Input] ", sendMessages);
+        api.llm.chat({
+          messages: sendMessages,
+          config: { ...modelConfig, stream: true },
+          onUpdate(message) {
+            botMessage.streaming = true;
+            if (message) {
+              botMessage.content = last_content + message;
+            }
+            set(() => ({}));
+          },
+          onFinish(message) {
+            botMessage.streaming = false;
+            if (message) {
+              botMessage.content = last_content + message;
               get().onNewMessage(botMessage);
             }
             ChatControllerPool.remove(
