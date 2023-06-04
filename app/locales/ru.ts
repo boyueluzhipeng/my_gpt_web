@@ -20,6 +20,7 @@ const ru: LocaleType = {
       Stop: "Остановить",
       Retry: "Повторить",
       Delete: "Удалить",
+      Continue: "Continue",
     },
     Rename: "Переименовать чат",
     Typing: "Печатает…",
